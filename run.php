@@ -2,8 +2,8 @@
 session_start();
 set_time_limit(0);
 error_reporting(0);
-$refcode = "JCRKFZ";
-$jml = 100;
+$refcode = "HNPKYN";
+$jml = 15;
 include 'Signature.php';
 	if(isset($refcode))
 	{
