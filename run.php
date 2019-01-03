@@ -2,7 +2,7 @@
 session_start();
 set_time_limit(0);
 error_reporting(0);
-$refcode = "DOBXMW";
+$refcode = "JCRKFZ";
 $jml = 100;
 include 'Signature.php';
 	if(isset($refcode))
@@ -18,8 +18,9 @@ include 'Signature.php';
 		ob_clean();
 		for ($i=0; $i < (int)$jml; $i++) { 
 			$uuid = Signatures::generateUUID();
-			curl_x("https://api.watchoona.com/api/v1/register-device", "udid=" . $uuid . "&deviceOS=android&deviceBrand=samsung&deviceModel=SM-J500H&appVersion=1.7.3&timeZone=+1&timeZoneName=Europe/Belgrade&osVersion=4.4.2&osLanguage=en&appLanguage=en&carrier=T-Mobile&carrierId=31016&screenWidth=1280&screenHeight=720&appLanguage=en", $uuid);
-
+			curl_x("https://api.watchoona.com/api/v1/register-device", "udid=" . $uuid . "&pushNotificationToken=ekm8-0vyNOc:APA91bFV6okz1-GeVY3RLFLiLoXRWNzFRkXTPrnJHMBgErKUCaPiOTaIWJADRI3iUyYO42R7MTjSCxXL3v8D9G965ugQkLdbUxmWH1-DTKWtUZP1L7Mtjjx9v2lBtyxlbqSb3dlF8tOv&deviceOS=android&deviceBrand=vivo&deviceModel=FINDX&appVersion=1.7.3&timeZone=+7&timeZoneName=Asia/Jakarta&osVersion=4.4.2&osLanguage=en&appLanguage=en&carrier=Telkomsel&carrierId=31011&screenWidth=1280&screenHeight=720&appLanguage=en", $uuid);
+			curl_x("https://api.watchoona.com/api/v1/register-device", "pushNotificationToken=ekm8-0vyNOc:APA91bFV6okz1-GeVY3RLFLiLoXRWNzFRkXTPrnJHMBgErKUCaPiOTaIWJADRI3iUyYO42R7MTjSCxXL3v8D9G965ugQkLdbUxmWH1-DTKWtUZP1L7Mtjjx9v2lBtyxlbqSb3dlF8tOv", $uuid);
+			sleep(5);
 			$json = json_decode(curl_x("https://api.watchoona.com/api/v1/verify-invite-code", "inviteCode=" . $refcode, $uuid));
 			if($json->status == "success")
 			{
@@ -67,131 +68,22 @@ function get_between($string, $start, $end) {
     $len = strpos($string,$end,$ini) - $ini;
     return substr($string,$ini,$len);
 }
-function curl_y($url, $fields="", $auth="", $ssl = 0, $followLocation = 0, $referer = '', $optUrl = '',  $deleteOldCookies=1, $sock = false, $usecookie=false, $geturl=false, $sesid=false,$cosid=false,$locale=false,$marketplace=false,$widget=false) {
-    $ch = curl_init($url);
-    $header = array();
-    $header[]  = "uuid: d8c19a44-107a-4bf3-b351-c3212b0a556e";
-    $header[]  = "Authorization: Bearer " . $auth;
-    $header[]  = "Connection: close";
-    $header[]  = "Content-Type: application/x-www-form-urlencoded";
-    $header[]  = "Accept-Encoding: gzip";
-    curl_setopt($ch, CURLOPT_USERAGENT, "okhttp/3.10.0");
-	curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
-	curl_setopt($ch,CURLOPT_ENCODING , "gzip");
-	curl_setopt($ch, CURLOPT_FRESH_CONNECT, true);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
-	if ($usecookie) { 
-	curl_setopt($ch, CURLOPT_COOKIEJAR, $usecookie); 
-	curl_setopt($ch, CURLOPT_COOKIEFILE, $usecookie);    
-	} 
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_AUTOREFERER, true);
-    if($followLocation){
-        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-    }
-    curl_setopt($ch, CURLOPT_URL, $url);
-    if($fields){
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $fields);
-    }else{
-        curl_setopt($ch, CURLOPT_POST, false);
-    }
-    if($referer){
-        curl_setopt($ch, CURLOPT_REFERER, $referer);
-    }else{
-        curl_setopt($ch, CURLOPT_REFERER, $url);
-    }
-    if($ssl){
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
-    }else{
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-    }
-    if($optUrl){
-        curl_setopt ($ch, CURLOPT_URL, $optUrl);
-    }
-	if($sock){
-		curl_setopt($ch, CURLOPT_PROXY, $sock);
-		curl_setopt($ch, CURLOPT_PROXYTYPE, CURLPROXY_SOCKS5);
-	}
-	if($geturl == true){
-		$xd1 = curl_exec($ch);
-		$xd2 = curl_getinfo($ch, CURLINFO_EFFECTIVE_URL);
-		return $xd1."|".$xd2;
-	} else {
-		$a = curl_exec($ch);
-		if(curl_error($ch)){
-			return curl_error($ch);
-		} else {
-			return $a;
-		}
-	}
-}
+
 function curl_x($url, $fields="", $uuid="", $ssl = 0, $followLocation = 0, $referer = '', $optUrl = '',  $deleteOldCookies=1, $sock = false, $usecookie=false, $geturl=false, $sesid=false,$cosid=false,$locale=false,$marketplace=false,$widget=false) {
     $ch = curl_init($url);
     $header = array();
     $header[]  = "uuid: " . $uuid;
     $header[]  = "Connection: close";
-    $header[]  = "Content-Type: application/x-www-form-urlencoded";
+    if($fields)
+    {
+    	$header[]  = "Content-Type: application/x-www-form-urlencoded";
+    }
     $header[]  = "Accept-Encoding: gzip";
     curl_setopt($ch, CURLOPT_USERAGENT, "okhttp/3.10.0");
 	curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
 	curl_setopt($ch,CURLOPT_ENCODING , "gzip");
 	curl_setopt($ch, CURLOPT_FRESH_CONNECT, true);
     curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
-	if ($usecookie) { 
-	curl_setopt($ch, CURLOPT_COOKIEJAR, $usecookie); 
-	curl_setopt($ch, CURLOPT_COOKIEFILE, $usecookie);    
-	} 
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_AUTOREFERER, true);
-    if($followLocation){
-        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-    }
-    curl_setopt($ch, CURLOPT_URL, $url);
-    if($fields){
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $fields);
-    }else{
-        curl_setopt($ch, CURLOPT_POST, false);
-    }
-    if($referer){
-        curl_setopt($ch, CURLOPT_REFERER, $referer);
-    }else{
-        curl_setopt($ch, CURLOPT_REFERER, $url);
-    }
-    if($ssl){
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
-    }else{
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-    }
-    if($optUrl){
-        curl_setopt ($ch, CURLOPT_URL, $optUrl);
-    }
-	if($sock){
-		curl_setopt($ch, CURLOPT_PROXY, $sock);
-		curl_setopt($ch, CURLOPT_PROXYTYPE, CURLPROXY_SOCKS5);
-	}
-	if($geturl == true){
-		$xd1 = curl_exec($ch);
-		$xd2 = curl_getinfo($ch, CURLINFO_EFFECTIVE_URL);
-		return $xd1."|".$xd2;
-	} else {
-		$a = curl_exec($ch);
-		if(curl_error($ch)){
-			return curl_error($ch);
-		} else {
-			return $a;
-		}
-	}
-}
-function curl($url, $fields="", $ssl = 0, $followLocation = 1, $referer = '', $optUrl = '',  $deleteOldCookies=1, $sock = false, $usecookie=false, $geturl=false, $sesid=false,$cosid=false,$locale=false,$marketplace=false,$widget=false) {
-    $ch = curl_init($url);
-
-	curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
-	curl_setopt($ch,CURLOPT_ENCODING , "gzip");
-	curl_setopt($ch, CURLOPT_FRESH_CONNECT, true);
     curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
 	if ($usecookie) { 
 	curl_setopt($ch, CURLOPT_COOKIEJAR, $usecookie); 
